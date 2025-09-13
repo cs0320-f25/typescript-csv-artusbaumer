@@ -67,3 +67,40 @@ describe("parseCSV with schema", () => {
     }
   });
 });
+const PersonWithEmailSchema = z
+  .tuple([z.string(), z.coerce.number(), z.email()])
+  .transform((tup) => ({
+    name: tup[0],
+    age: tup[1],
+    email: tup[2],
+  }));
+  const PEOPLE_EMAIL_PATH = path.join(__dirname, "../data/people_with_email.csv");
+
+describe("parseCSV with PersonWithEmailSchema", () => {
+  test("parses rows with emails correctly", async () => {
+    const result = await parseCSV(PEOPLE_EMAIL_PATH, PersonWithEmailSchema);
+
+    expect(result).not.toBeInstanceOf(ZodError);
+    if (!(result instanceof ZodError)) {
+      expect(result).toHaveLength(3);
+
+      expect(result[0]).toEqual({
+        name: "Alice",
+        age: 23,
+        email: "alice@example.com",
+      });
+
+      expect(result[1]).toEqual({
+        name: "Bob",
+        age: 30,
+        email: "bob@domain.com",
+      });
+
+      expect(result[2]).toEqual({
+        name: "Charlie",
+        age: 19,
+        email: "charlie@school.edu",
+      });
+    }
+  });
+});

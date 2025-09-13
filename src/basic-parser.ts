@@ -15,7 +15,8 @@ import { z, ZodError, ZodType } from "zod";
  * You shouldn't need to alter them.
  * 
  * @param path The path to the file being loaded.
- * @returns a "promise" to produce a 2-d array of cell values
+ * @param schema ZodType that formats the row data into a desired structure
+ * @returns a "promise" to produce a 2-d array of cell values or a zod error type if the data is invalid
  */
 export async function parseCSV<T>(path: string, schema: ZodType<T> | undefined): Promise<string[][] | T[] | z.ZodError>{ //Ask if the 1st row is a header
   // This initial block of code reads from a file in Node.js. The "rl"
